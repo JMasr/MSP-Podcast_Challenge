@@ -134,9 +134,6 @@ ssl_model = AutoModel.from_pretrained(SSL_TYPE)
 ssl_model.freeze_feature_encoder()
 ssl_model.eval()
 ssl_model.cuda()
-# Move your model to the first GPU in the list (optional but recommended)
-ssl_model = nn.DataParallel(ssl_model, device_ids=device_ids)
-ssl_model = ssl_model.to(device_ids[0])
 
 ########## Implement pooling method ##########
 feat_dim = ssl_model.config.hidden_size
@@ -151,8 +148,6 @@ else:
     pool_model = pool_net()
 print(pool_model)
 pool_model.cuda()
-pool_model = nn.DataParallel(pool_model, device_ids=device_ids)
-pool_model = pool_model.to(device_ids[0])
 
 concat_pool_type_list = ["AttentiveStatisticsPooling"]
 dh_input_dim = feat_dim * 2 \
@@ -163,9 +158,6 @@ ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5
 ##############################################
 ser_model.eval()
 ser_model.cuda()
-ser_model = nn.DataParallel(ser_model, device_ids=device_ids)
-ser_model = ser_model.to(device_ids[0])
-
 
 ssl_opt = torch.optim.AdamW(ssl_model.parameters(), LR)
 ser_opt = torch.optim.AdamW(ser_model.parameters(), LR)
@@ -184,6 +176,16 @@ lm.alloc_stat_type_list(["dev_loss"])
 
 min_epoch = 0
 min_loss = 1e10
+
+ssl_model = nn.DataParallel(ssl_model, device_ids=device_ids)
+ssl_model.to(device_ids[0])
+
+ser_model = nn.DataParallel(ser_model, device_ids=device_ids)
+ser_model.to(device_ids[0])
+
+pool_model = nn.DataParallel(pool_model, device_ids=device_ids)
+pool_model.to(device_ids[0])
+
 
 for epoch in range(EPOCHS):
     print("Epoch: ", epoch)
