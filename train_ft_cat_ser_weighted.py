@@ -15,6 +15,8 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from transformers import AutoModel
 
+from process_labels_for_categorical import process_labels_for_categorical
+
 # Self-Written Modules
 sys.path.append(os.getcwd())
 import net
@@ -53,7 +55,8 @@ audio_path = config["wav_dir"]
 label_path = config["label_path"]
 
 # Load the CSV file
-df = pd.read_csv(label_path)
+df = process_labels_for_categorical(label_path)
+label_path = label_path.replace('.csv', '_processed.csv')
 
 # Filter out only 'Train' samples
 train_df = df[df['Split_Set'] == 'Train']
