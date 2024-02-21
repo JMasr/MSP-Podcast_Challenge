@@ -132,6 +132,7 @@ print("Loading pre-trained ", SSL_TYPE, " model...")
 ssl_model = AutoModel.from_pretrained(SSL_TYPE)
 ssl_model.freeze_feature_encoder()
 ssl_model.eval()
+ssl_model.cuda()
 # Move your model to the first GPU in the list (optional but recommended)
 ssl_model = ssl_model.to(device_ids[0])
 
@@ -148,6 +149,8 @@ else:
     pool_model = pool_net()
 print(pool_model)
 pool_model.cuda()
+pool_model = pool_model.to(device_ids[0])
+
 concat_pool_type_list = ["AttentiveStatisticsPooling"]
 dh_input_dim = feat_dim * 2 \
     if args.pooling_type in concat_pool_type_list \
@@ -155,9 +158,10 @@ dh_input_dim = feat_dim * 2 \
 
 ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5)
 ##############################################
-ser_model.eval();
+ser_model.eval()
 ser_model.cuda()
-ser_model = ser_model.to(device_ids[1])
+ser_model = ser_model.to(device_ids[0])
+
 
 ssl_opt = torch.optim.AdamW(ssl_model.parameters(), LR)
 ser_opt = torch.optim.AdamW(ser_model.parameters(), LR)
