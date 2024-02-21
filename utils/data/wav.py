@@ -27,20 +27,20 @@ def extract_wav(wav_path: str) -> np.ndarray:
     return s
 
 
-def load_audio(audio_path: str, utts: np.ndarray, nj: int = 12) -> list[np.ndarray]:
+def load_audio(audio_path: str, utterances: np.ndarray, nj: int = 12) -> list[np.ndarray]:
     """
     Load audio files from a directory.
 
     :param audio_path: Path to the directory of audio files.
     :type audio_path: str
-    :param utts: List of utterance names with .wav extension.
-    :type utts: np.ndarray
+    :param utterances: List of utterance names with .wav extension.
+    :type utterances: np.ndarray
     :param nj: Number of cores for multi-threading.
     :type nj: int
     :return: List of audio samples.
     :rtype: list[np.ndarray]
     """
-    wav_paths = [os.path.join(audio_path, utt) for utt in utts]
+    wav_paths = [os.path.join(audio_path, utt) for utt in utterances]
     with Pool(nj) as p:
-        wavs = list(tqdm(p.imap(extract_wav, wav_paths), total=len(wav_paths)))
-    return wavs
+        raw_wav_ndarrays = list(tqdm(p.imap(extract_wav, wav_paths), total=len(wav_paths)))
+    return raw_wav_ndarrays
