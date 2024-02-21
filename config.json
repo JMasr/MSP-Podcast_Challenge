@@ -1,4 +1,5 @@
 {
     "wav_dir": "/media/jose_m/Box1/Odyssey/Audios_Sample",
-    "label_path": "/media/jose_m/Box1/Odyssey/Labels/labels_consensus_sample.csv"
+    "label_path": "/media/jose_m/Box1/Odyssey/Labels/labels_consensus_sample.csv",
+    "label_path_dev": "/media/jose_m/Box1/Odyssey/Labels/labels_consensus_dev.csv"
 }

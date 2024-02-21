@@ -58,7 +58,7 @@ config_path = "config.json"
 with open(config_path, "r") as f:
     config = json.load(f)
 audio_path = config["wav_dir"]
-label_path = config["label_path"]
+label_path = config["label_path_dev"]
 
 import pandas as pd
 import numpy as np
@@ -106,16 +106,15 @@ for dtype in ["test3", "dev"]:
     total_dataset[dtype] = utils.CombinedSet([cur_wav_set, cur_emo_set, cur_utts])
     total_dataloader[dtype] = DataLoader(
         total_dataset[dtype], batch_size=1, shuffle=False,
-        pin_memory=True, num_workers=4,
+        pin_memory=True, num_workers=args.nj,
         collate_fn=utils.collate_fn_wav_lab_mask
     )
 
 print("Loading pre-trained ", SSL_TYPE, " model...")
-
 ssl_model = AutoModel.from_pretrained(SSL_TYPE)
 ssl_model.freeze_feature_encoder()
 ssl_model.load_state_dict(torch.load(MODEL_PATH + "/best_ssl.pt"))
-ssl_model.eval();
+ssl_model.eval()
 ssl_model.cuda()
 ########## Implement pooling method ##########
 feat_dim = ssl_model.config.hidden_size
