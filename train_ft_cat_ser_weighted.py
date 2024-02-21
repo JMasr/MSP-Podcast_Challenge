@@ -38,6 +38,9 @@ parser.add_argument("--nj", type=int, default=num_cores)
 parser.add_argument("--pooling_type", type=str, default="MeanPooling")
 args = parser.parse_args()
 
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:20480"
+
+
 utils.set_deterministic(args.seed)
 SSL_TYPE = utils.get_ssl_type(args.ssl_type)
 assert SSL_TYPE != None, print("Invalid SSL type!")
