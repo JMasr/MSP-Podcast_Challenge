@@ -13,7 +13,7 @@ def process_labels_for_categorical(path_to_label_csv: str) -> pd.DataFrame:
     emotion_codes = ["A", "S", "H", "U", "F", "D", "C", "N"]
 
     # Create a dictionary for one-hot encoding
-    one_hot_dict = {e: [1.0 if e == ec else 0.0 for ec in emotion_codes] for e in emotion_codes}
+    one_hot_dict = {e: [True if e == ec else False for ec in emotion_codes] for e in emotion_codes}
 
     # Filter out rows with undefined EmoClass
     df = df[df['EmoClass'].isin(emotion_codes)]
