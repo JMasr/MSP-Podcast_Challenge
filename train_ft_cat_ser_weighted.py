@@ -27,7 +27,7 @@ num_cores = multiprocessing.cpu_count() - 1
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--seed", type=int, default=100)
-parser.add_argument("--ssl_type", type=str, default="wavlm-medium")
+parser.add_argument("--ssl_type", type=str, default="wav2vec2-large-robust")
 parser.add_argument("--batch_size", type=int, default=32)
 parser.add_argument("--accumulation_steps", type=int, default=1)
 parser.add_argument("--epochs", type=int, default=10)
