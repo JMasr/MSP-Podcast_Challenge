@@ -38,8 +38,18 @@ parser.add_argument("--nj", type=int, default=num_cores)
 parser.add_argument("--pooling_type", type=str, default="MeanPooling")
 args = parser.parse_args()
 
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:20480"
+# Get the total number of available GPUs
+num_gpus = torch.cuda.device_count()
 
+if num_gpus == 0:
+    print("No GPUs available. Make sure CUDA is properly installed.")
+    device_ids = [torch.device("cpu")]
+else:
+    print("Number of available GPUs:", num_gpus)
+
+    # Create a list of device IDs
+    device_ids = list(range(num_gpus))
+    print("Device IDs:", device_ids)
 
 utils.set_deterministic(args.seed)
 SSL_TYPE = utils.get_ssl_type(args.ssl_type)
@@ -123,6 +133,8 @@ ssl_model = AutoModel.from_pretrained(SSL_TYPE)
 ssl_model.freeze_feature_encoder()
 ssl_model.eval();
 ssl_model.cuda()
+# Move your model to the first GPU in the list (optional but recommended)
+ssl_model = ssl_model.to(device_ids[0])
 
 ########## Implement pooling method ##########
 feat_dim = ssl_model.config.hidden_size
@@ -146,6 +158,7 @@ ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5
 ##############################################
 ser_model.eval();
 ser_model.cuda()
+ser_model = ser_model.to(device_ids[1])
 
 ssl_opt = torch.optim.AdamW(ssl_model.parameters(), LR)
 ser_opt = torch.optim.AdamW(ser_model.parameters(), LR)
