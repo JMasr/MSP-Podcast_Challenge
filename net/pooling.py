@@ -12,11 +12,6 @@ import torch.nn.functional as F
 
 __all__ = [
     "MeanPooling",
-    "MinPooling",
-    "MaxPooling",
-    "MinMaxPooling",
-    "TemporalStatisticsPooling",    
-    "SelfAttentivePooling",
     "AttentiveStatisticsPooling",
 ]
 
