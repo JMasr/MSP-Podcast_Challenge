@@ -10,6 +10,7 @@ import pandas as pd
 
 # PyTorch Modules
 import torch
+from torch import nn
 from torch.utils.data import DataLoader
 # 3rd-Party Modules
 from tqdm import tqdm
@@ -134,6 +135,7 @@ ssl_model.freeze_feature_encoder()
 ssl_model.eval()
 ssl_model.cuda()
 # Move your model to the first GPU in the list (optional but recommended)
+ssl_model = nn.DataParallel(ssl_model, device_ids=device_ids)
 ssl_model = ssl_model.to(device_ids[0])
 
 ########## Implement pooling method ##########
@@ -149,6 +151,7 @@ else:
     pool_model = pool_net()
 print(pool_model)
 pool_model.cuda()
+pool_model = nn.DataParallel(pool_model, device_ids=device_ids)
 pool_model = pool_model.to(device_ids[0])
 
 concat_pool_type_list = ["AttentiveStatisticsPooling"]
@@ -160,6 +163,7 @@ ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5
 ##############################################
 ser_model.eval()
 ser_model.cuda()
+ser_model = nn.DataParallel(ser_model, device_ids=device_ids)
 ser_model = ser_model.to(device_ids[0])
 
 
