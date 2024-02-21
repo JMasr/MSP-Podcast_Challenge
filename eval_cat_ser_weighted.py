@@ -113,7 +113,7 @@ for dtype in ["test3", "dev"]:
 print("Loading pre-trained ", SSL_TYPE, " model...")
 ssl_model = AutoModel.from_pretrained(SSL_TYPE)
 ssl_model.freeze_feature_encoder()
-ssl_model.load_state_dict(torch.load(MODEL_PATH + "/best_ssl.pt"))
+ssl_model.load_state_dict(torch.load(MODEL_PATH + "/final_ssl.pt"))
 ssl_model.eval()
 ssl_model.cuda()
 ########## Implement pooling method ##########
@@ -124,7 +124,7 @@ attention_pool_type_list = ["AttentiveStatisticsPooling"]
 if args.pooling_type in attention_pool_type_list:
     is_attentive_pooling = True
     pool_model = pool_net(feat_dim)
-    pool_model.load_state_dict(torch.load(MODEL_PATH + "/best_pool.pt"))
+    pool_model.load_state_dict(torch.load(MODEL_PATH + "/final_pool.pt"))
 else:
     is_attentive_pooling = False
     pool_model = pool_net()
@@ -139,7 +139,7 @@ dh_input_dim = feat_dim * 2 \
 
 ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5)
 ##############################################
-ser_model.load_state_dict(torch.load(MODEL_PATH + "/best_ser.pt"))
+ser_model.load_state_dict(torch.load(MODEL_PATH + "/final_ser.pt"))
 ser_model.eval();
 ser_model.cuda()
 
