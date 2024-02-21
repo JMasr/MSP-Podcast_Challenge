@@ -1,29 +1,33 @@
 import pandas as pd
 
-# Use this code to create a .csv file with the necessary format needed for 
-# categorical emotion recognition model
 
-# Load Original label_consensus.csv file provided with dataset
-df = pd.read_csv('path/to/original/label_consensus.csv')
+def process_labels_for_categorical(path_to_label_csv: str) -> pd.DataFrame:
+    # Use this code to create a .csv file with the necessary format needed for
+    # categorical emotion recognition model
 
-# Define the emotions
-emotions = ["Angry", "Sad", "Happy", "Surprise", "Fear", "Disgust", "Contempt", "Neutral"]
-emotion_codes = ["A", "S", "H", "U", "F", "D", "C", "N"]
+    # Load Original label_consensus.csv file provided with dataset
+    df = pd.read_csv(path_to_label_csv)
 
-# Create a dictionary for one-hot encoding
-one_hot_dict = {e: [1.0 if e == ec else 0.0 for ec in emotion_codes] for e in emotion_codes}
+    # Define the emotions
+    emotions = ["Angry", "Sad", "Happy", "Surprise", "Fear", "Disgust", "Contempt", "Neutral"]
+    emotion_codes = ["A", "S", "H", "U", "F", "D", "C", "N"]
 
-# Filter out rows with undefined EmoClass
-df = df[df['EmoClass'].isin(emotion_codes)]
+    # Create a dictionary for one-hot encoding
+    one_hot_dict = {e: [1.0 if e == ec else 0.0 for ec in emotion_codes] for e in emotion_codes}
 
-# Apply one-hot encoding
-for i, e in enumerate(emotion_codes):
-    df[emotions[i]] = df['EmoClass'].apply(lambda x: one_hot_dict[x][i])
+    # Filter out rows with undefined EmoClass
+    df = df[df['EmoClass'].isin(emotion_codes)]
 
-# Select relevant columns for the new CSV
-df_final = df[['FileName', *emotions, 'Split_Set']]
+    # Apply one-hot encoding
+    for i, e in enumerate(emotion_codes):
+        df[emotions[i]] = df['EmoClass'].apply(lambda x: one_hot_dict[x][i])
 
-# Save the processed data to a new CSV file
-df_final.to_csv('processed_labels.csv', index=False)
+    # Select relevant columns for the new CSV
+    df_final = df[['FileName', *emotions, 'Split_Set']]
 
-print("Processing complete. New file saved as 'processed_labels.csv'")
+    # Save the processed data to a new CSV file
+    path_label_processed = path_to_label_csv.replace('.csv', '_processed.csv')
+    df_final.to_csv(path_label_processed, index=False)
+
+    print(f"Processing complete. New file saved as {path_label_processed}")
+    return df_final
