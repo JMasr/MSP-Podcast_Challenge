@@ -14,7 +14,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 # 3rd-Party Modules
 from tqdm import tqdm
-from transformers import AutoModel
+from transformers import AutoModel, Wav2Vec2Model
 
 from process_labels_for_categorical import process_labels_for_categorical
 
@@ -111,11 +111,24 @@ for dtype in ["test3", "dev"]:
     )
 
 print("Loading pre-trained ", SSL_TYPE, " model...")
-ssl_model = AutoModel.from_pretrained(SSL_TYPE)
-ssl_model.freeze_feature_encoder()
-ssl_model.load_state_dict(torch.load(MODEL_PATH + "/final_ssl.pt"))
-ssl_model.eval()
-ssl_model.cuda()
+if SSL_TYPE == "wav2vec2-base-960":
+    ssl_model = Wav2Vec2Model.from_pretrained(SSL_TYPE)
+    ssl_model.freeze_feature_encoder()
+    state_dict = torch.load(MODEL_PATH + "/final_ssl.pt")
+    state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+
+    ssl_model.load_state_dict(state_dict)
+    ssl_model.eval()
+    ssl_model.cuda()
+else:
+    ssl_model = AutoModel.from_pretrained(SSL_TYPE)
+    ssl_model.freeze_feature_encoder()
+    state_dict = torch.load(MODEL_PATH + "/final_ssl.pt")
+    state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+    ssl_model.load_state_dict(state_dict)
+    ssl_model.eval()
+    ssl_model.cuda()
+
 ########## Implement pooling method ##########
 feat_dim = ssl_model.config.hidden_size
 
@@ -124,7 +137,9 @@ attention_pool_type_list = ["AttentiveStatisticsPooling"]
 if args.pooling_type in attention_pool_type_list:
     is_attentive_pooling = True
     pool_model = pool_net(feat_dim)
-    pool_model.load_state_dict(torch.load(MODEL_PATH + "/final_pool.pt"))
+    state_dict = torch.load(MODEL_PATH + "/final_pool.pt")
+    state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+    pool_model.load_state_dict(state_dict)
 else:
     is_attentive_pooling = False
     pool_model = pool_net()
@@ -139,8 +154,10 @@ dh_input_dim = feat_dim * 2 \
 
 ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5)
 ##############################################
-ser_model.load_state_dict(torch.load(MODEL_PATH + "/final_ser.pt"))
-ser_model.eval();
+state_dict = torch.load(MODEL_PATH + "/final_ser.pt")
+state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
+ser_model.load_state_dict(state_dict)
+ser_model.eval()
 ser_model.cuda()
 
 lm = utils.LogManager()
@@ -166,7 +183,6 @@ ser_model.to(device_ids[0])
 
 pool_model = nn.DataParallel(pool_model, device_ids=device_ids)
 pool_model.to(device_ids[0])
-
 
 INFERENCE_TIME = 0
 FRAME_SEC = 0
