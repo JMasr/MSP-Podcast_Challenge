@@ -47,6 +47,8 @@ assert (ACCUMULATION_STEP > 0) and (BATCH_SIZE % ACCUMULATION_STEP == 0)
 EPOCHS = args.epochs
 LR = args.lr
 MODEL_PATH = args.model_path
+if not os.path.exists(MODEL_PATH):
+    os.makedirs(MODEL_PATH, exist_ok=True)
 
 config_path = "config.json"
 with open(config_path, "r") as f:
