@@ -271,13 +271,14 @@ for epoch in range(EPOCHS):
         print("Save", min_epoch)
         print("Loss", min_loss)
         save_model_list = ["ser", "ssl"]
-        if is_attentive_pooling:
-            save_model_list.append("pool")
 
-        torch.save(ser_model.state_dict(), \
+        save_model_list.append("pool")
+
+        torch.save(ser_model.state_dict(),
                    os.path.join(MODEL_PATH, "final_ser.pt"))
-        torch.save(ssl_model.state_dict(), \
+
+        torch.save(ssl_model.state_dict(),
                    os.path.join(MODEL_PATH, "final_ssl.pt"))
-        if is_attentive_pooling:
-            torch.save(pool_model.state_dict(), \
-                       os.path.join(MODEL_PATH, "final_pool.pt"))
+
+        torch.save(pool_model.state_dict(),
+                   os.path.join(MODEL_PATH, "final_pool.pt"))
