@@ -27,7 +27,7 @@ num_cores = multiprocessing.cpu_count() - 1
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--seed", type=int, default=100)
-parser.add_argument("--ssl_type", type=str, default="wavlm-large")
+parser.add_argument("--ssl_type", type=str, default="wavlm-medium")
 parser.add_argument("--batch_size", type=int, default=32)
 parser.add_argument("--accumulation_steps", type=int, default=1)
 parser.add_argument("--epochs", type=int, default=10)
@@ -131,8 +131,7 @@ print("Loading pre-trained ", SSL_TYPE, " model...")
 
 ssl_model = AutoModel.from_pretrained(SSL_TYPE)
 ssl_model.freeze_feature_encoder()
-ssl_model.eval();
-ssl_model.cuda()
+ssl_model.eval()
 # Move your model to the first GPU in the list (optional but recommended)
 ssl_model = ssl_model.to(device_ids[0])
 
