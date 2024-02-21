@@ -96,7 +96,7 @@ print(class_weights_tensor)
 
 total_dataset = dict()
 total_dataloader = dict()
-for dtype in ["test3", "dev"]:
+for dtype in ["test3"]:
     cur_utts, cur_labs = utils.load_cat_emo_label(label_path, dtype)
     cur_wavs = utils.load_audio(audio_path, cur_utts)
     wav_mean, wav_std = utils.load_norm_stat(MODEL_PATH + "/train_norm_stat.pkl")
@@ -238,8 +238,6 @@ for dtype in ["test3", "dev"]:
 
     # Load the CSV file
     df = pd.read_csv(csv_filename)
-
-
     # Function to convert string representation of one-hot vectors to numpy arrays
     def string_to_array(s):
         return np.array([float(i) for i in s.strip('\"').split(',')])
@@ -280,12 +278,12 @@ for dtype in ["test3", "dev"]:
     lm.add_torch_stat(f"{dtype}_loss", loss)
 
 lm.print_stat()
-print("Duration of whole dev+test set", FRAME_SEC, "sec")
+print("Duration of whole test set", FRAME_SEC, "sec")
 print("Inference time", INFERENCE_TIME, "sec")
 print("Inference time per sec", INFERENCE_TIME / FRAME_SEC, "sec")
 
 os.makedirs(os.path.dirname(args.store_path), exist_ok=True)
 with open(args.store_path, 'w') as f:
-    for dtype in ["dev", "test"]:
+    for dtype in ["test"]:
         loss = str(lm.get_stat(f"{dtype}_loss"))
         f.write(loss + "\n")
