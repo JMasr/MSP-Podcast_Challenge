@@ -27,12 +27,12 @@ import utils
 num_cores = multiprocessing.cpu_count() - 1
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--seed", type=int, default=100)
-parser.add_argument("--ssl_type", type=str, default="wav2vec2-base-960")
-parser.add_argument("--batch_size", type=int, default=32)
-parser.add_argument("--accumulation_steps", type=int, default=1)
-parser.add_argument("--epochs", type=int, default=10)
-parser.add_argument("--lr", type=float, default=0.001)
+parser.add_argument("--seed", type=int, default=42)
+parser.add_argument("--ssl_type", type=str, default="wav2vec2-xl")
+parser.add_argument("--batch_size", type=int, default=64)
+parser.add_argument("--accumulation_steps", type=int, default=4)
+parser.add_argument("--epochs", type=int, default=50)
+parser.add_argument("--lr", type=float, default=1e-5)
 parser.add_argument("--model_path", type=str, default="./temp")
 parser.add_argument("--head_dim", type=int, default=1024)
 parser.add_argument("--nj", type=int, default=num_cores)
