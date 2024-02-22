@@ -186,7 +186,6 @@ ser_model.to(device_ids[0])
 pool_model = nn.DataParallel(pool_model, device_ids=device_ids)
 pool_model.to(device_ids[0])
 
-
 for epoch in range(EPOCHS):
     print("Epoch: ", epoch)
     lm.init_stat()
