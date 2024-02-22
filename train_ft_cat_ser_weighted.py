@@ -34,7 +34,8 @@ parser.add_argument("--accumulation_steps", type=int, default=4)
 parser.add_argument("--epochs", type=int, default=50)
 parser.add_argument("--lr", type=float, default=1e-5)
 parser.add_argument("--model_path", type=str, default="./temp")
-parser.add_argument("--head_dim", type=int, default=1024)
+parser.add_argument("--head_dim", type=int, default=32)
+parser.add_argument("--num_layers", type=int, default=8)
 parser.add_argument("--nj", type=int, default=num_cores)
 parser.add_argument("--pooling_type", type=str, default="MeanPooling")
 args = parser.parse_args()
@@ -154,7 +155,7 @@ dh_input_dim = feat_dim * 2 \
     if args.pooling_type in concat_pool_type_list \
     else feat_dim
 
-ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5)
+ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, args.num_layers, 8, dropout=0.2)
 ##############################################
 ser_model.eval()
 ser_model.cuda()
