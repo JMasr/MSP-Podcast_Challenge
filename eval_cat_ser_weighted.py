@@ -186,7 +186,7 @@ pool_model.to(device_ids[0])
 
 INFERENCE_TIME = 0
 FRAME_SEC = 0
-for dtype in ["test3", "dev"]:
+for dtype in ["test3"]:
     total_pred = []
     total_y = []
     total_utt = []
