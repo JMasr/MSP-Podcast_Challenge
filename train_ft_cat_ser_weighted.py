@@ -6,8 +6,6 @@ import json
 import argparse
 import multiprocessing
 
-import pandas as pd
-
 # PyTorch Modules
 import torch
 from torch import nn
@@ -196,12 +194,12 @@ for epoch in range(EPOCHS):
     batch_cnt = 0
 
     for xy_pair in tqdm(total_dataloader["train"]):
-        x = xy_pair[0];
+        x = xy_pair[0]
         x = x.cuda(non_blocking=True).float()
-        y = xy_pair[1];
-        y = y.max(dim=1)[1];
+        y = xy_pair[1]
+        y = y.max(dim=1)[1]
         y = y.cuda(non_blocking=True).long()
-        mask = xy_pair[2];
+        mask = xy_pair[2]
         mask = mask.cuda(non_blocking=True).float()
 
         ssl = ssl_model(x, attention_mask=mask).last_hidden_state  # (B, T, 1024)
@@ -237,12 +235,12 @@ for epoch in range(EPOCHS):
     total_pred = []
     total_y = []
     for xy_pair in tqdm(total_dataloader["dev"]):
-        x = xy_pair[0];
+        x = xy_pair[0]
         x = x.cuda(non_blocking=True).float()
-        y = xy_pair[1];
-        y = y.max(dim=1)[1];
+        y = xy_pair[1]
+        y = y.max(dim=1)[1]
         y = y.cuda(non_blocking=True).long()
-        mask = xy_pair[2];
+        mask = xy_pair[2]
         mask = mask.cuda(non_blocking=True).float()
 
         with torch.no_grad():
@@ -270,9 +268,7 @@ for epoch in range(EPOCHS):
 
         print("Save", min_epoch)
         print("Loss", min_loss)
-        save_model_list = ["ser", "ssl"]
-
-        save_model_list.append("pool")
+        save_model_list = ["ser", "ssl", "pool"]
 
         torch.save(ser_model.state_dict(),
                    os.path.join(MODEL_PATH, "final_ser.pt"))
