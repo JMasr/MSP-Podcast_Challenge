@@ -27,14 +27,14 @@ num_cores = multiprocessing.cpu_count() - 1
 parser = argparse.ArgumentParser()
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--ssl_type", type=str, default="wav2vec2-xl")
-parser.add_argument("--batch_size", type=int, default=64)
-parser.add_argument("--accumulation_steps", type=int, default=2)
-parser.add_argument("--epochs", type=int, default=50)
+parser.add_argument("--batch_size", type=int, default=32)
+parser.add_argument("--accumulation_steps", type=int, default=4)
+parser.add_argument("--epochs", type=int, default=20)
 parser.add_argument("--lr", type=float, default=1e-5)
 parser.add_argument("--model_path", type=str, default="./temp")
 parser.add_argument("--head_dim", type=int, default=1024)
 parser.add_argument("--num_layers", type=int, default=4)
-parser.add_argument("--dropout", type=float, default=0.2)
+parser.add_argument("--dropout", type=float, default=0.5)
 parser.add_argument("--nj", type=int, default=num_cores)
 parser.add_argument("--pooling_type", type=str, default="MeanPooling")
 args = parser.parse_args()
@@ -256,6 +256,7 @@ for epoch in range(EPOCHS):
     total_pred = torch.cat(total_pred, 0)
     total_y = torch.cat(total_y, 0)
     loss = utils.CE_weight_category(emo_pred, y, class_weights_tensor)
+
     # Logging
     lm.add_torch_stat("dev_loss", loss)
 

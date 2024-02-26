@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 
 
@@ -14,6 +16,12 @@ def process_labels_for_categorical(path_to_label_csv: str) -> pd.DataFrame:
 
     # Create a dictionary for one-hot encoding
     one_hot_dict = {e: [True if e == ec else False for ec in emotion_codes] for e in emotion_codes}
+
+    # Save the one-hot dictionary to a pickle file
+    one_hot_dict_path = path_to_label_csv.replace('.csv', '_one_hot_dict.pkl')
+    with open(one_hot_dict_path, 'wb') as f:
+        pickle.dump(one_hot_dict, f)
+    print(f"One-hot dictionary saved as {one_hot_dict_path}")
 
     # Filter out rows with undefined EmoClass
     df = df[df['EmoClass'].isin(emotion_codes)]
