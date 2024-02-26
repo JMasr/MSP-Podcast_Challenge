@@ -111,7 +111,7 @@ for dtype in ["test3"]:
     )
 
 print("Loading pre-trained ", SSL_TYPE, " model...")
-if SSL_TYPE == "wav2vec2-base-960":
+if "wav2vec" in SSL_TYPE:
     ssl_model = Wav2Vec2Model.from_pretrained(SSL_TYPE)
     ssl_model.freeze_feature_encoder()
     state_dict = torch.load(MODEL_PATH + "/final_ssl.pt")
