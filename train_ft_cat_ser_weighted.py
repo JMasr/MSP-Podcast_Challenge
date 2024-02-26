@@ -265,10 +265,10 @@ for epoch in range(EPOCHS):
     print("F1-score (macro): ", f1_macro)
     print("F1-score (micro): ", f1_micro)
 
-        # CCC calculation
+    # CCC calculation
     total_pred = torch.cat(total_pred, 0)
     total_y = torch.cat(total_y, 0)
-    loss = utils.CE_weight_category(emo_pred, y, class_weights_tensor)
+    loss = utils.CE_weight_category(total_pred,total_y, class_weights_tensor)
 
     # Logging
     lm.add_torch_stat("dev_loss", loss)
