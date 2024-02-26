@@ -8,6 +8,7 @@ import multiprocessing
 
 # PyTorch Modules
 import torch
+from sklearn.metrics import f1_score
 from torch import nn
 from torch.utils.data import DataLoader
 # 3rd-Party Modules
@@ -233,8 +234,8 @@ for epoch in range(EPOCHS):
     ssl_model.eval()
     pool_model.eval()
     ser_model.eval()
-    total_pred = []
-    total_y = []
+    total_pred, total_y = [], []
+    total_pred_utt, total_y_utt = [], []
     for xy_pair in tqdm(total_dataloader["dev"]):
         x = xy_pair[0]
         x = x.cuda(non_blocking=True).float()
@@ -252,7 +253,19 @@ for epoch in range(EPOCHS):
             total_pred.append(emo_pred)
             total_y.append(y)
 
-    # CCC calculation
+            total_pred_utt.append(emo_pred.argmax(dim=1))
+            total_y_utt.append(y.argmax(dim=1))
+
+    # F1-score
+    f1_w = f1_score(emo_pred, y, average='weighted')
+    f1_macro = f1_score(emo_pred, y, average='macro')
+    f1_micro = f1_score(emo_pred, y, average='micro')
+
+    print("F1-score (weighted): ", f1_w)
+    print("F1-score (macro): ", f1_macro)
+    print("F1-score (micro): ", f1_micro)
+
+        # CCC calculation
     total_pred = torch.cat(total_pred, 0)
     total_y = torch.cat(total_y, 0)
     loss = utils.CE_weight_category(emo_pred, y, class_weights_tensor)
