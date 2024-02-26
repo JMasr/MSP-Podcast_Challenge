@@ -195,7 +195,7 @@ for epoch in range(EPOCHS):
     ser_model.train()
     batch_cnt = 0
 
-    for xy_pair in tqdm(total_dataloader["train"]):
+    for xy_pair in tqdm(total_dataloader["train"][:100]):
         x = xy_pair[0]
         x = x.cuda(non_blocking=True).float()
         y = xy_pair[1]
@@ -254,12 +254,12 @@ for epoch in range(EPOCHS):
             total_y.append(y)
 
             total_pred_utt.append(emo_pred.argmax(dim=1))
-            total_y_utt.append(y.argmax(dim=1))
+            total_y_utt.append(y.argmax(dim=0))
 
     # F1-score
-    f1_w = f1_score(emo_pred, y, average='weighted')
-    f1_macro = f1_score(emo_pred, y, average='macro')
-    f1_micro = f1_score(emo_pred, y, average='micro')
+    f1_w = f1_score(total_pred, total_y, average='weighted')
+    f1_macro = f1_score(total_pred, total_y, average='macro')
+    f1_micro = f1_score(total_pred, total_y, average='micro')
 
     print("F1-score (weighted): ", f1_w)
     print("F1-score (macro): ", f1_macro)
@@ -268,7 +268,7 @@ for epoch in range(EPOCHS):
     # CCC calculation
     total_pred = torch.cat(total_pred, 0)
     total_y = torch.cat(total_y, 0)
-    loss = utils.CE_weight_category(total_pred,total_y, class_weights_tensor)
+    loss = utils.CE_weight_category(total_pred, total_y, class_weights_tensor)
 
     # Logging
     lm.add_torch_stat("dev_loss", loss)
