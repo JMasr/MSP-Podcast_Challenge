@@ -27,7 +27,7 @@ import utils
 num_cores = multiprocessing.cpu_count() - 1
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--ssl_type", type=str, default="wav2vec2-base-960")
+parser.add_argument("--ssl_type", type=str, default="wav2vec2-xl")
 parser.add_argument("--model_path", type=str, default="./temp")
 parser.add_argument("--pooling_type", type=str, default="MeanPooling")
 parser.add_argument("--head_dim", type=int, default=1024)
