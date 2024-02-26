@@ -154,9 +154,9 @@ dh_input_dim = feat_dim * 2 \
 
 ser_model = net.EmotionRegression(dh_input_dim, args.head_dim, 1, 8, dropout=0.5)
 ##############################################
-state_dict = torch.load(MODEL_PATH + "/final_ser.pt", strict=False)
+state_dict = torch.load(MODEL_PATH + "/final_ser.pt")
 state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
-ser_model.load_state_dict(state_dict)
+ser_model.load_state_dict(state_dict, strict=False)
 ser_model.eval()
 ser_model.cuda()
 
