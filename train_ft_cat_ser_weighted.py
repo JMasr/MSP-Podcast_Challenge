@@ -254,8 +254,10 @@ for epoch in range(EPOCHS):
             total_pred.append(emo_pred)
             total_y.append(y)
 
-            total_pred_utt.append(emo_pred.argmax(dim=1))
-            total_y_utt.append(y.argmax(dim=0))
+            predic_cpu = emo_pred.argmax(dim=1).cpu().numpy()
+            y_cpu = y.cpu().numpy()
+            total_pred_utt.append(predic_cpu)
+            total_y_utt.append(y_cpu)
 
     # F1-score
     f1_w = f1_score(total_pred, total_y, average='weighted')
