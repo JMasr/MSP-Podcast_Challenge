@@ -260,9 +260,9 @@ for epoch in range(EPOCHS):
             total_y_utt.append(y_cpu)
 
     # F1-score
-    f1_w = f1_score(total_pred, total_y, average='weighted')
-    f1_macro = f1_score(total_pred, total_y, average='macro')
-    f1_micro = f1_score(total_pred, total_y, average='micro')
+    f1_w = f1_score(total_pred_utt, total_y_utt, average='weighted')
+    f1_macro = f1_score(total_pred_utt, total_y_utt, average='macro')
+    f1_micro = f1_score(total_pred_utt, total_y_utt, average='micro')
 
     print("F1-score (weighted): ", f1_w)
     print("F1-score (macro): ", f1_macro)
