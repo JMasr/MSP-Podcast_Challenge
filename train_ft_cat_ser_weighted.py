@@ -123,6 +123,7 @@ for dtype in ["train", "dev"]:
     ########################################################
     cur_emo_set = utils.CAT_EmoSet(cur_labs)
     total_dataset[dtype] = utils.CombinedSet([cur_wav_set, cur_emo_set, cur_utts])
+
     total_dataloader[dtype] = DataLoader(
         total_dataset[dtype], batch_size=cur_bs, shuffle=is_shuffle,
         pin_memory=True, num_workers=4,
@@ -195,7 +196,7 @@ for epoch in range(EPOCHS):
     ser_model.train()
     batch_cnt = 0
 
-    for xy_pair in tqdm(total_dataloader["train"][:100]):
+    for xy_pair in tqdm(total_dataloader["train"]):
         x = xy_pair[0]
         x = x.cuda(non_blocking=True).float()
         y = xy_pair[1]
@@ -268,28 +269,14 @@ for epoch in range(EPOCHS):
     # CCC calculation
     total_pred = torch.cat(total_pred, 0)
     total_y = torch.cat(total_y, 0)
-    loss = utils.CE_weight_category(total_pred, total_y, class_weights_tensor)
 
-    # Logging
-    lm.add_torch_stat("dev_loss", loss)
+save_model_list = ["ser", "ssl", "pool"]
 
-    # Save model
-    lm.print_stat()
+torch.save(ser_model.state_dict(),
+           os.path.join(MODEL_PATH, "final_ser.pt"))
 
-    dev_loss = lm.get_stat("dev_loss")
-    if min_loss > dev_loss:
-        min_epoch = epoch
-        min_loss = dev_loss
+torch.save(ssl_model.state_dict(),
+           os.path.join(MODEL_PATH, "final_ssl.pt"))
 
-        print("Save", min_epoch)
-        print("Loss", min_loss)
-        save_model_list = ["ser", "ssl", "pool"]
-
-        torch.save(ser_model.state_dict(),
-                   os.path.join(MODEL_PATH, "final_ser.pt"))
-
-        torch.save(ssl_model.state_dict(),
-                   os.path.join(MODEL_PATH, "final_ssl.pt"))
-
-        torch.save(pool_model.state_dict(),
-                   os.path.join(MODEL_PATH, "final_pool.pt"))
+torch.save(pool_model.state_dict(),
+           os.path.join(MODEL_PATH, "final_pool.pt"))
